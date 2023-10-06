@@ -16,8 +16,6 @@ struct Size
 class Shape
 {
 public:
-  Shape() = default;
-
   virtual void Draw() = 0;
   virtual void SetPosition(Point point) = 0;
   virtual void SetSize(Size size) = 0;
@@ -49,39 +47,29 @@ public:
     {
       for (int w = 0; w < size.w; w++)
       {
-        if ((w == 0 || w == size.w - 1))
+        bool box_sides = (w == 0 || w == size.w - 1);
+        bool floor_roof = (h == 0 || h == size.h - 1);
+
+        bool vertices = ((h == 0 && w == 0) || (h == size.h - 1 && w == size.w - 1) || (h == size.h - 1 && w == 0) || (h == 0 && w == size.w - 1));
+
+        if (vertices)
+        {
+          std::cout << 'o';
+        }
+        else if (box_sides && !vertices)
         {
           std::cout << '|';
         }
-        else if (h == 0 || h == size.h - 1)
+        else if (floor_roof && !vertices)
         {
           std::cout << '-';
         }
         else
         {
-          std::cout << " ";
+          std::cout << ' ';
         }
       }
       std::cout << '\n';
     }
   }
 };
-
-// Point x y
-
-// Size w h
-
-// for (int h = 0; h < s.h; h++) {
-//     for (int w = 0; w < s.w; w++) {
-//         if ((w == 0 || w == s.w - 1)) {
-//             cout << '|';
-//         }
-//         else if (h == 0 || h == s.h - 1) {
-//             cout << '-';
-//         }
-//         else {
-//         cout << " ";
-//         }
-//     }
-//     cout << '\n';
-// }
