@@ -1,75 +1,91 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 
-struct Point
+constexpr int screen_w = 40;
+constexpr int screen_h = 20;
+
+struct Size
+{
+  unsigned int w;
+  unsigned int h;
+};
+
+struct Position
 {
   int x;
   int y;
 };
 
-struct Size
-{
-  int w;
-  int h;
-};
-
-class Shape
+class Screen
 {
 public:
-  virtual void Draw() = 0;
-  virtual void SetPosition(Point point) = 0;
-  virtual void SetSize(Size size) = 0;
-
-protected:
-  Point m_point{0, 0};
-  Size m_size{0, 0};
-};
-
-class Box : public Shape
-{
-public:
-  void SetPosition(Point point) override
+  Screen()
   {
-    m_point = point;
-  }
+    screen.resize(width, std::vector<char>(heigth, '0'));
+  };
 
-  void SetSize(Size size) override
+  std::vector<std::vector<char>> screen;
+
+  unsigned int width = screen_w;
+  unsigned int heigth = screen_h;
+
+  void render()
   {
-    m_size = size;
-  }
-
-  void Draw() override
-  {
-
-    Size size = m_size;
-
-    for (int h = 0; h < size.h; h++)
+    for (int h = 0; h < heigth; h++)
     {
-      for (int w = 0; w < size.w; w++)
+      for (int w = 0; w < width; w++)
       {
-        bool box_sides = (w == 0 || w == size.w - 1);
-        bool floor_roof = (h == 0 || h == size.h - 1);
+        std::cout << screen[w][h];
+      }
+      std::cout << std::endl;
+    }
+  }
+};
 
-        bool vertices = ((h == 0 && w == 0) || (h == size.h - 1 && w == size.w - 1) || (h == size.h - 1 && w == 0) || (h == 0 && w == size.w - 1));
+class Shapes
+{
+public:
+  virtual void Draw(Screen &s, Size &m_size, Position &pos, char symbol) = 0;
+};
+
+class Box : public Shapes
+{
+public:
+  void Draw(Screen &s, Size &m_size, Position &m_pos, char symbol) override
+  {
+    for (int h = 0; h < m_size.h; h++)
+    {
+      for (int w = 0; w < m_size.w; w++)
+      {
+        bool box_sides = (w == 0 || w == m_size.w - 1);
+        bool floor_roof = (h == 0 || h == m_size.h - 1);
+        bool vertices = ((h == 0 && w == 0) || (h == m_size.h - 1 && w == m_size.w - 1) || (h == m_size.h - 1 && w == 0) || (h == 0 && w == m_size.w - 1));
+        // bool width_gap = w % 2 == 0;
+
+        auto &screen = s.screen[w + m_pos.x][h + m_pos.y];
 
         if (vertices)
         {
-          std::cout << 'o';
+          screen = symbol;
         }
-        else if (box_sides && !vertices)
+        else if (box_sides)
         {
-          std::cout << '|';
+          screen = '|';
         }
-        else if (floor_roof && !vertices)
+        else if (floor_roof)
         {
-          std::cout << '-';
+          screen = '-';
         }
         else
         {
-          std::cout << ' ';
+          screen = ' ';
         }
       }
-      std::cout << '\n';
     }
   }
+
+  Size m_size{4, 4};
+  Position m_pos{0, 0};
 };
