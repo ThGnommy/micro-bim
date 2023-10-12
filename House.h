@@ -31,6 +31,10 @@ private:
   Size m_size{screen_w, screen_h};
 };
 
+class Floor : public House
+{
+};
+
 class Window : public House
 {
 public:
@@ -95,7 +99,3 @@ public:
 
   Size m_size{5, 6};
 };
-
-// class Floor : public House
-// {
-// };
