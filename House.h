@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <vector>
-#include "shape.h"
+#include "screenlib.h"
 
 class House
 {
@@ -12,7 +12,7 @@ public:
   House(Screen &screen)
   {
     Box _house;
-    _house.Draw(screen, m_size, m_pos, '*');
+    _house.Draw(screen, m_size, m_pos);
   }
 
   std::vector<House *> doors;
@@ -20,36 +20,8 @@ public:
 
   Position m_pos{0, 0};
 
-  virtual int GetCost()
-  {
-    for (auto &door : doors)
-    {
-      total_cost += door->GetCost();
-    }
-
-    for (auto &window : windows)
-    {
-      total_cost += window->GetCost();
-    }
-
-    return total_cost;
-  }
-
-  virtual int GetDeliveryTime()
-  {
-
-    for (auto &door : doors)
-    {
-      total_delivery_time += door->GetDeliveryTime();
-    }
-
-    for (auto &window : windows)
-    {
-      total_delivery_time += window->GetDeliveryTime();
-    }
-
-    return total_delivery_time;
-  }
+  virtual int GetCost();
+  virtual int GetDeliveryTime();
 
 protected:
   int total_cost = 300'000;
@@ -66,8 +38,8 @@ public:
   {
     Box _window;
     auto width = static_cast<int>(std::floor(screen.width / 2));
-    auto heigth = static_cast<int>(std::floor(screen.heigth / 2));
-    m_pos = {width, heigth};
+    auto height = static_cast<int>(std::floor(screen.height / 2));
+    m_pos = {width, height};
     _window.Draw(screen, m_size, m_pos, 'W');
 
     total_cost += cost;
@@ -81,15 +53,9 @@ public:
     _window.Draw(screen, m_size, m_pos, 'W');
   }
 
-  int GetCost() override
-  {
-    return cost;
-  }
+  int GetCost() override;
 
-  int GetDeliveryTime() override
-  {
-    return delivery_time;
-  }
+  int GetDeliveryTime() override;
 
   int cost = 500;
   int delivery_time = 10;
@@ -104,7 +70,7 @@ public:
   {
     Box _door;
     auto width = static_cast<int>(std::floor(screen.width / 2));
-    auto height = screen.heigth - m_size.h;
+    auto height = screen.height - m_size.h;
 
     m_pos = {w_pos, (int)height};
     _door.Draw(screen, m_size, m_pos, 'D');
@@ -120,15 +86,9 @@ public:
     _door.Draw(screen, m_size, m_pos, 'D');
   }
 
-  int GetCost() override
-  {
-    return cost;
-  }
+  int GetCost() override;
 
-  int GetDeliveryTime() override
-  {
-    return total_delivery_time;
-  }
+  int GetDeliveryTime() override;
 
   int cost = 500;
   int delivery_time = 15;
@@ -136,6 +96,6 @@ public:
   Size m_size{5, 6};
 };
 
-class Floor : public House
-{
-};
+// class Floor : public House
+// {
+// };

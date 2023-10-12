@@ -1,5 +1,5 @@
 #include <iostream>
-#include "shape.h"
+#include "screenlib.h"
 #include "House.h"
 
 int main()
@@ -18,7 +18,7 @@ int main()
     std::cout << "1 - Add a door\n";
     std::cout << "2 - Add a window\n";
     std::cout << "3 - Render\n";
-    std::cout << "\n - Or insert another character to quit\n";
+    std::cout << "\n - Or insert another key to quit\n";
 
     std::cin >> user_choice;
 
@@ -51,6 +51,5 @@ int main()
       break;
     }
   }
-
   return 0;
 }
