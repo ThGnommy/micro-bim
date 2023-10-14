@@ -2,6 +2,28 @@
 
 int House::GetCost()
 {
+
+  for (auto &floor : floors)
+  {
+    total_cost += floor->GetCost();
+  }
+
+  return total_cost;
+}
+
+int House::GetDeliveryTime()
+{
+
+  for (auto &floor : floors)
+  {
+    total_delivery_time += floor->GetDeliveryTime();
+  }
+
+  return total_delivery_time;
+}
+
+int Floor::GetCost()
+{
   for (auto &door : doors)
   {
     total_cost += door->GetCost();
@@ -15,7 +37,7 @@ int House::GetCost()
   return total_cost;
 }
 
-int House::GetDeliveryTime()
+int Floor::GetDeliveryTime()
 {
 
   for (auto &door : doors)

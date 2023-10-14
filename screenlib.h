@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 
-constexpr int screen_w = 100;
-constexpr int screen_h = 56;
+// constexpr int screen_w = 50;
+// constexpr int screen_h = 20;
 
 struct Size
 {
@@ -21,15 +21,16 @@ struct Position
 class Screen
 {
 public:
-  Screen()
+  Screen(unsigned int width, unsigned int height)
+      : m_width(width), m_height(height)
   {
-    screen.resize(width, std::vector<char>(height, ' '));
+    screen.resize(m_width, std::vector<char>(m_height, ' '));
   };
 
   std::vector<std::vector<char>> screen;
 
-  unsigned int width = screen_w;
-  unsigned int height = screen_h;
+  unsigned int m_width;
+  unsigned int m_height;
 
   void render();
 };
@@ -44,7 +45,7 @@ class Box : public Shapes
 {
 public:
   /**
-   * Draw a new Box
+   * Draw a new Box into the Screen
    *
    * @param s The Screen where everything is drawed.
    * @param m_size The size of the box
