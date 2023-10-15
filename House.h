@@ -1,134 +1,130 @@
 #pragma once
 
-#include "screenlib.h"
 #include <iostream>
 #include <vector>
+#include "screenlib.h"
 
-class House
+class Component
 {
-public:
-  House() = default;
-
-  House(Screen &screen)
-  {
-    Box _house;
-    _house.Draw(screen, m_size, m_pos);
-  }
-
-  House(Screen &screen, int floor_number = 1)
-  {
-    Box _house;
-    m_size = {screen.m_width, screen.m_height};
-    _house.Draw(screen, m_size, m_pos);
-  }
-
-  std::vector<House *> floors;
-
-  Position m_pos{0, 0};
-
-  virtual int GetCost();
-  virtual int GetDeliveryTime();
-
 protected:
-  int total_cost = 300'000;
-  int total_delivery_time = 100;
+  Component *parent_;
+
+public:
+  virtual ~Component() {}
+
+  void SetParent(Component *parent)
+  {
+    this->parent_ = parent;
+  }
+
+  Component *GetParent() const
+  {
+    return this->parent_;
+  }
+
+  virtual void Build(Screen &s){};
+  virtual void Add(Component *component) {}
+  virtual void BuildComponents(Screen &s){};
+  // virtual void GetCost() const = 0;
+
+  Position m_pos{};
   Size m_size{};
 };
 
-class Floor : public House
+class HouseComposite : public Component
+{
+public:
+  HouseComposite() = default;
+
+  void Build(Screen &s) override
+  {
+    Box _house;
+
+    s.UpdateScreen(s.m_width, 20);
+    m_size = {s.m_width, 20};
+    _house.Draw(s, m_size, m_pos, 'o');
+  }
+
+  void GetCost() const override;
+
+  void Add(Component *component) override
+  {
+    this->children.push_back(component);
+    component->SetParent(this);
+  }
+
+  void BuildComponents(Screen &s) override
+  {
+    for (Component *c : children)
+    {
+      c->Build(s);
+    }
+  }
+
+  std::vector<Component *> children;
+
+  Size m_size{};
+  Position m_pos{0, 0};
+
+  int cost{100};
+  float delivery_time{1.5f};
+};
+
+class Floor : public Component
 {
 public:
   Floor() = default;
 
-  virtual int GetCost();
-  virtual int GetDeliveryTime();
-
-  Floor(Screen &screen)
+  void Build(Screen &s) override
   {
+    auto house = GetParent();
+    m_size = {house->m_size.w, 20};
+
     Box _floor;
+    _floor.Draw(s, m_size, m_pos);
+  };
 
-    auto height = screen.m_height - m_size.h;
-    m_pos = {0, (int)height};
-    _floor.Draw(screen, this->m_size, this->m_pos, 'F');
+  void GetCost() const;
 
-    total_cost += cost;
-    total_delivery_time += delivery_time;
+  std::vector<Component *> children;
+
+  void Add(Component *component) override
+  {
+    this->children.push_back(component);
+    component->SetParent(this);
   }
 
-  std::vector<Floor *> doors;
-  std::vector<Floor *> windows;
+  void BuildComponents(Screen &s) override{};
 
-protected:
-  int cost = 1000;
-  int delivery_time = 25;
+  Size m_size{};
   Position m_pos{0, 0};
-
-private:
-  Size m_size{House::m_size.w, 10};
+  int cost{100};
+  float delivery_time{1.5f};
 };
 
-class Window : public Floor
+class Window : public Component
 {
-public:
-  Window(Screen &screen)
+  void Add(Component *component) override{};
+  void Build(Screen &s) override
   {
-    Box _window;
-    auto width = static_cast<int>(std::floor(((screen.m_width / 2) - m_size.w / 2)));
-    auto height = static_cast<int>(std::floor((screen.m_height / 2) - m_size.h / 2));
-
-    m_pos = {width, height};
-    _window.Draw(screen, m_size, m_pos, 'W');
-
-    total_cost += cost;
-    total_delivery_time += delivery_time;
   }
 
-  Window(Screen &screen, Size size, Position m_pos)
-      : m_size(size)
-  {
-    Box _window;
-    _window.Draw(screen, m_size, m_pos, 'W');
-  }
+  virtual void GetCost() const;
 
-  int GetCost() override;
-
-  int GetDeliveryTime() override;
-
-  int cost = 500;
-  int delivery_time = 10;
-
-  Size m_size{8, 4};
+  Size m_size{20, 20};
+  Position m_pos{0, 0};
+  int cost{100};
+  float delivery_time{1.5f};
 };
 
-class Door : public Floor
+class Door : public Component
 {
-public:
-  Door(Screen &screen, int w_pos)
-  {
-    Box _door;
-    auto width = static_cast<int>(std::floor(screen.m_width / 2));
-    auto height = screen.m_height - m_size.h;
+  void Add(Component *component) override{};
+  void Build(Screen &s) override{};
+  virtual void GetCost() const;
 
-    m_pos = {w_pos, (int)height};
-    _door.Draw(screen, m_size, m_pos, 'D');
-
-    total_cost += cost;
-    total_delivery_time += delivery_time;
-  }
-
-  Door(Screen &screen, Size size, Position m_pos)
-      : m_size(size)
-  {
-    Box _door;
-    _door.Draw(screen, m_size, m_pos, 'D');
-  }
-
-  int GetCost() override;
-
-  int GetDeliveryTime() override;
-
-  int cost = 500;
-  int delivery_time = 15;
-
-  Size m_size{5, 6};
+  Size m_size{20, 20};
+  Position m_pos{0, 0};
+  int cost{100};
+  float delivery_time{1.5f};
 };

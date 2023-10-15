@@ -3,9 +3,13 @@
 #include <iostream>
 #include <vector>
 
-// constexpr int screen_w = 50;
-// constexpr int screen_h = 20;
+constexpr int screen_w = 50;
+constexpr int screen_h = 20;
 
+/**
+ * unsigned int w
+ * unsigned int h
+ */
 struct Size
 {
   unsigned int w;
@@ -18,9 +22,14 @@ struct Position
   int y;
 };
 
+Position operator+(const Position &lhs, const Position &rhs);
+Position operator-(const Position &lhs, const Position &rhs);
+
 class Screen
 {
 public:
+  Screen() = default;
+
   Screen(unsigned int width, unsigned int height)
       : m_width(width), m_height(height)
   {
@@ -29,10 +38,15 @@ public:
 
   std::vector<std::vector<char>> screen;
 
-  unsigned int m_width;
-  unsigned int m_height;
+  unsigned int m_width = screen_w;
+  unsigned int m_height = screen_h;
 
-  void render();
+  void UpdateScreen(unsigned int width, unsigned int height)
+  {
+    screen.resize(m_width, std::vector<char>(m_height));
+  }
+
+  void Render() const;
 };
 
 class Shapes

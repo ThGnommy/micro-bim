@@ -1,7 +1,17 @@
 #include <iostream>
 #include "screenlib.h"
 
-void Screen::render()
+Position operator+(const Position &lhs, const Position &rhs)
+{
+  return {lhs.x + rhs.x, lhs.y + rhs.y};
+}
+
+Position operator-(const Position &lhs, const Position &rhs)
+{
+  return {lhs.x - rhs.x, lhs.y - rhs.y};
+}
+
+void Screen::Render() const
 {
   for (int h = 0; h < m_height; h++)
   {
