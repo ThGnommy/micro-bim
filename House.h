@@ -38,12 +38,11 @@ class Floor : public House
 class Window : public House
 {
 public:
-  Window(Screen &screen)
+  Window(Screen &screen, int h_pos)
   {
     Box _window;
     auto width = static_cast<int>(std::floor(screen.width / 2));
-    auto height = static_cast<int>(std::floor(screen.height / 2));
-    m_pos = {width, height};
+    m_pos = {width, h_pos};
     _window.Draw(screen, m_size, m_pos, 'W');
 
     total_cost += cost;

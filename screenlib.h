@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 
-constexpr int screen_w = 100;
-constexpr int screen_h = 56;
+constexpr int screen_w = 50;
+constexpr int screen_h = 20;
 
 struct Size
 {

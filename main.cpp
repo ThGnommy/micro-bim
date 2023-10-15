@@ -2,6 +2,15 @@
 #include "screenlib.h"
 #include "House.h"
 
+namespace
+{
+  void ClearScreen()
+  {
+    printf("\33c\e[3J");
+  }
+
+}
+
 int main()
 {
   // Initialize the screen for rendering
@@ -35,11 +44,18 @@ int main()
     else if (user_choice == 2)
     {
       // add a window
-      house.windows.push_back(new Window(screen));
+
+      int h_pos{0};
+
+      std::cout << "Choose the y position: ";
+      std::cin >> h_pos;
+
+      house.windows.push_back(new Window(screen, h_pos));
     }
     else if (user_choice == 3)
     {
       // render
+      ClearScreen();
       screen.render();
 
       std::cout << "Total cost: " << house.GetCost() << "$\n";
