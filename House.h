@@ -37,8 +37,18 @@ public:
   virtual void BuildComponents(Screen &s){};
   virtual int GetCost() const = 0;
 
+  virtual void SetPosition(Position new_pos)
+  {
+    m_pos = new_pos;
+  }
+
+  virtual void SetSize(Size new_size)
+  {
+    m_size = new_size;
+  }
+
   Position m_pos{0, 0};
-  Size m_size{};
+  Size m_size{0, 0};
 };
 
 class HouseComposite : public Component
@@ -66,7 +76,8 @@ public:
   FloorComposite(Component *parent) : Component(parent)
   {
     Component *house = GetParent();
-    m_size.w = house->m_size.w;
+    // SetPosition({10, 10});
+    SetSize({10, 10});
   }
 
   void Build(Screen &s) override;
@@ -83,8 +94,6 @@ public:
 
   std::vector<Component *> children;
 
-  // Size m_size{};
-  // Position m_pos{};
   int cost{100};
   float delivery_time{1.5f};
 };

@@ -22,7 +22,19 @@ void HouseComposite::BuildComponents(Screen &s)
 
     Component *house = GetParent();
 
-    // children[i]->Build(s, {house->m_pos.x, 0});
+    int new_pos_y = (unsigned int)((children[i]->m_size.h) * i);
+    children[i]->SetPosition({m_pos.x, new_pos_y});
+
+    //((int)s.m_height - (int)(m_size.h)
+    // std::cout << "new_pos_y: " << new_pos_y << std::endl;
+
+    // std::cout << children[i]->m_pos.x << " <- pos.x : pos.y -> " << children[i]->m_pos.y << "\n";
+
+    // std::cout << "BuildComponents m_size.h: " << m_size.h << std::endl;
+
+    // std::cout << "BuildComponents m_pos.y: " << m_pos.y << std::endl;
+
+    children[i]->Build(s);
   }
 }
 
@@ -33,4 +45,10 @@ int HouseComposite::GetCost() const
 
 void FloorComposite::Build(Screen &s)
 {
+  Drawable _floor;
+  std::cout << "m_size.h: " << m_size.h << std::endl;
+
+  std::cout << "m_pos.y: " << m_pos.y << std::endl;
+
+  _floor.DrawBox(s, m_size, m_pos, 'F');
 }
