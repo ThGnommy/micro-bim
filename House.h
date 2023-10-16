@@ -75,9 +75,6 @@ class FloorComposite : public Component
 public:
   FloorComposite(Component *parent) : Component(parent)
   {
-    Component *house = GetParent();
-    // SetPosition({10, 10});
-    SetSize({10, 10});
   }
 
   void Build(Screen &s) override;
