@@ -49,13 +49,7 @@ public:
   void Render() const;
 };
 
-class Shapes
-{
-public:
-  virtual void Draw(Screen &s, Size &m_size, Position &pos, char vertices_symbol = 'o') = 0;
-};
-
-class Box : public Shapes
+class Drawable
 {
 public:
   /**
@@ -66,5 +60,5 @@ public:
    * @param m_pos The position of the box inside the screen
    * @param vertices_symbol The symbol for the vertices of the drew box, default is 'o'
    */
-  void Draw(Screen &s, Size &m_size, Position &m_pos, char vertices_symbol = 'o') override;
+  void DrawBox(Screen &s, Size &m_size, Position &pos, char vertices_symbol = 'o');
 };

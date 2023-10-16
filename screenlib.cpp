@@ -23,7 +23,7 @@ void Screen::Render() const
   }
 }
 
-void Box::Draw(Screen &s, Size &m_size, Position &m_pos, char vertices_symbol)
+void Drawable::DrawBox(Screen &s, Size &m_size, Position &m_pos, char vertices_symbol)
 {
   for (int h = 0; h < m_size.h; h++)
   {
