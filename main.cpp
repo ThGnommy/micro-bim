@@ -30,6 +30,24 @@ int main()
   house->Build(screen);
   house->BuildComponents(screen);
 
+  int floor_index = 0;
+
+  std::cout << "Select floor to modify: ";
+  std::cin >> floor_index;
+
+  if (house->IsComposite())
+  {
+    auto floors = house->GetChildren();
+    auto floor = floors[floor_index];
+
+    floor->Add(new Door(floor));
+
+    for (auto &cose : floor->GetChildren())
+    {
+      cose->Build(screen);
+    }
+  }
+
   screen.Render();
 
   delete house;

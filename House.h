@@ -11,15 +11,10 @@ protected:
 
 public:
   Component(Component *parent = nullptr) : parent_(parent){};
-
-  Component(Component &other) = delete; // copy constructor
-
-  Component &operator=(Component &other) = delete; // copy assignment
-
-  Component(Component &&other) noexcept = delete; // move constructor
-
+  Component(Component &other) = delete;                  // copy constructor
+  Component &operator=(Component &other) = delete;       // copy assignment
+  Component(Component &&other) noexcept = delete;        // move constructor
   Component &operator=(const Component &other) = delete; // copy assignment
-
   virtual ~Component() {}
 
   void SetParent(Component *parent)
@@ -32,10 +27,15 @@ public:
     return this->parent_;
   }
 
-  virtual void Build(Screen &s){};
+  virtual void Build(Screen &s, Position pos = {0, 0}){};
   virtual void Add(Component *component) {}
   virtual void BuildComponents(Screen &s){};
   virtual int GetCost() const = 0;
+  virtual std::vector<Component *> GetChildren() const = 0;
+  virtual bool IsComposite() const
+  {
+    return false;
+  }
 
   virtual void SetPosition(Position new_pos)
   {
@@ -47,6 +47,8 @@ public:
     m_size = new_size;
   }
 
+  // std::vector<Component *> children;
+
   Position m_pos{0, 0};
   Size m_size{0, 0};
 };
@@ -56,7 +58,7 @@ class HouseComposite : public Component
 public:
   HouseComposite() = default;
 
-  void Build(Screen &s) override;
+  void Build(Screen &s, Position pos = {0, 0}) override;
 
   int GetCost() const override;
 
@@ -65,6 +67,16 @@ public:
   void BuildComponents(Screen &s) override;
 
   std::vector<Component *> children;
+
+  std::vector<Component *> GetChildren() const override
+  {
+    return this->children;
+  }
+
+  bool IsComposite() const override
+  {
+    return true;
+  }
 
   int cost{100};
   float delivery_time{1.5f};
@@ -77,7 +89,7 @@ public:
   {
   }
 
-  void Build(Screen &s) override;
+  void Build(Screen &s, Position pos) override;
 
   int GetCost() const override{};
 
@@ -87,12 +99,44 @@ public:
     component->SetParent(this);
   }
 
-  void BuildComponents(Screen &s) override{};
+  void BuildComponents(Screen &s) override;
+
+  bool IsComposite() const override
+  {
+    return true;
+  }
+
+  std::vector<Component *> GetChildren() const override
+  {
+    return this->children;
+  }
 
   std::vector<Component *> children;
 
   int cost{100};
   float delivery_time{1.5f};
+};
+
+class Door : public Component
+{
+
+public:
+  Door(Component *parent) : Component(parent)
+  {
+    SetSize({6, 6});
+  }
+
+  void Build(Screen &s, Position pos) override;
+  void BuildComponents(Screen &s) override{};
+  int GetCost() const override { return cost; };
+
+  std::vector<Component *> GetChildren() const override{};
+
+  int cost{100};
+  float delivery_time{1.5f};
+
+private:
+  void Add(Component *component) override{};
 };
 
 // class Window : public Component
@@ -107,29 +151,6 @@ public:
 //   int GetCost() const override{};
 
 //   Size m_size{6, 6};
-//   Position m_pos{0, 0};
-//   int cost{100};
-//   float delivery_time{1.5f};
-
-// private:
-//   void Add(Component *component) override{};
-// };
-
-// class Door : public Component
-// {
-
-// public:
-//   void Build(Screen &s, Position _pos) override
-//   {
-//     Drawable _door;
-//     _door.DrawBox(s, m_size, _pos);
-//   };
-
-//   void BuildComponents(Screen &s) override{};
-
-//   int GetCost() const override{};
-
-//   Size m_size{20, 20};
 //   Position m_pos{0, 0};
 //   int cost{100};
 //   float delivery_time{1.5f};

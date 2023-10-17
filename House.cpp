@@ -1,6 +1,6 @@
 #include "House.h"
 
-void HouseComposite::Build(Screen &s)
+void HouseComposite::Build(Screen &s, Position pos)
 {
   Drawable _house;
 
@@ -19,22 +19,10 @@ void HouseComposite::BuildComponents(Screen &s)
 {
   for (int i = 0; i < children.size(); ++i)
   {
-
     Component *house = GetParent();
-
-    // int new_y = ;
-
+    // int new_y = ((children[i]->m_size.h) * i);
     children[i]->SetSize({m_size.w, 15});
-    children[i]->SetPosition({m_pos.x, (int)((children[i]->m_size.h) * i)});
-
-    //((int)s.m_height - (int)(m_size.h)
-    // std::cout << "new_pos_y: " << new_pos_y << std::endl;
-
-    // std::cout << children[i]->m_pos.x << " <- pos.x : pos.y -> " << children[i]->m_pos.y << "\n";
-
-    // std::cout << "BuildComponents m_size.h: " << m_size.h << std::endl;
-
-    // std::cout << "BuildComponents m_pos.y: " << m_pos.y << std::endl;
+    children[i]->SetPosition({m_pos.x, (int)((children[i]->m_size.h) / i)});
 
     children[i]->Build(s);
   }
@@ -45,9 +33,26 @@ int HouseComposite::GetCost() const
   return cost;
 };
 
-void FloorComposite::Build(Screen &s)
+void FloorComposite::Build(Screen &s, Position pos)
 {
   Drawable _floor;
-
   _floor.DrawBox(s, m_size, m_pos, 'F');
 }
+
+void FloorComposite::BuildComponents(Screen &s){};
+
+void Door::Build(Screen &s, Position pos)
+{
+  Drawable _door;
+
+  auto parent = GetParent();
+
+  Position relative_pos = {parent->m_pos.x, parent->m_pos.y};
+
+  std::cout << relative_pos.x << " : " << relative_pos.y << std::endl;
+
+  SetPosition(relative_pos);
+  SetSize({4, 6});
+
+  _door.DrawBox(s, m_size, m_pos, 'D');
+};
