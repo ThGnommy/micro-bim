@@ -51,6 +51,7 @@ public:
   unsigned int floor_h{20};
 
   int number_of_floor{};
+
   Position m_pos{0, 0};
   Size m_size{0, 0};
 };
@@ -101,8 +102,8 @@ public:
 
   std::vector<Component *> children;
 
-  int cost{100};
-  float delivery_time{1.5f};
+  int cost{1000};
+  float delivery_time{10.0f};
 };
 
 class Door : public Component
@@ -111,11 +112,10 @@ class Door : public Component
 public:
   Door(Component *parent, Position _pos) : Component(parent), added_position(_pos)
   {
-    SetSize({6, 6});
+    SetSize({4, 6});
   }
 
   void Build(Screen &s, Position pos) override;
-  void BuildComponents(Screen &s) override{};
   int GetCost() const override { return cost; };
 
   std::vector<Component *> GetChildren() const override{};
@@ -126,25 +126,30 @@ public:
   Position added_position{};
 
 private:
+  void BuildComponents(Screen &s) override{};
   void Add(Component *component) override{};
 };
 
-// class Window : public Component
-// {
-// public:
-//   void Build(Screen &s, Position _pos) override
-//   {
-//     Drawable _window;
-//     _window.DrawBox(s, m_size, _pos);
-//   }
+class Window : public Component
+{
+public:
+  Window(Component *parent, Position _pos) : Component(parent), added_position(_pos)
+  {
+    SetSize({5, 5});
+  }
 
-//   int GetCost() const override{};
+  void Build(Screen &s, Position _pos) override;
 
-//   Size m_size{6, 6};
-//   Position m_pos{0, 0};
-//   int cost{100};
-//   float delivery_time{1.5f};
+  int GetCost() const override { return cost; };
 
-// private:
-//   void Add(Component *component) override{};
-// };
+  std::vector<Component *> GetChildren() const override{};
+
+  int cost{60};
+  float delivery_time{1.5f};
+
+  Position added_position{};
+
+private:
+  void Add(Component *component) override{};
+  void BuildComponents(Screen &s) override{};
+};

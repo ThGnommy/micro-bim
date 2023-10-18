@@ -32,7 +32,7 @@ void Drawable::DrawBox(Screen &s, Size &m_size, Position &m_pos, char vertices_s
       bool box_sides = (w == 0 || w == m_size.w - 1);
       bool floor_roof = (h == 0 || h == m_size.h - 1);
       bool vertices = ((h == 0 && w == 0) || (h == m_size.h - 1 && w == m_size.w - 1) || (h == m_size.h - 1 && w == 0) || (h == 0 && w == m_size.w - 1));
-      // bool width_gap = w % 2 == 0;
+      bool width_gap = w % 2 == 0;
 
       auto &screen = s.screen[w + m_pos.x][h + m_pos.y];
 
@@ -44,7 +44,7 @@ void Drawable::DrawBox(Screen &s, Size &m_size, Position &m_pos, char vertices_s
       {
         screen = '|';
       }
-      else if (floor_roof)
+      else if (floor_roof && width_gap)
       {
         screen = '-';
       }

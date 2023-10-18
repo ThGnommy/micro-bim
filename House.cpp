@@ -4,8 +4,6 @@ void HouseComposite::Build(Screen &s, Position pos)
 {
   Drawable _house;
 
-  // m_size = {s.m_width, (unsigned int)(children.size() * floor_h)};
-
   SetSize({floor_w, (unsigned int)(GetChildren().size() * floor_h)});
 
   _house.DrawBox(s, m_size, m_pos, 'o');
@@ -27,9 +25,6 @@ void HouseComposite::BuildComponents(Screen &s)
     children[i]->SetSize({m_size.w, floor_h});
 
     int pos_y = (int)((HouseComposite::m_size.h) - (children[i]->m_size.h * (i + 1)));
-
-    std::cout << "i: " << i << "\t" << pos_y << "\n";
-    std::cout << "House m_size.h: " << HouseComposite::m_size.h << "\n";
 
     children[i]->SetPosition({m_pos.x, pos_y});
 
@@ -56,12 +51,24 @@ void Door::Build(Screen &s, Position pos)
 
   auto parent = GetParent();
 
-  Position relative_pos = {parent->m_pos.x, parent->m_pos.y};
-
-  std::cout << relative_pos.x << " : " << relative_pos.y << std::endl;
+  int to_bottom = floor_h - m_size.h;
+  Position relative_pos = {parent->m_pos.x, parent->m_pos.y + to_bottom};
 
   SetPosition(relative_pos + added_position);
-  SetSize({4, 6});
 
   _door.DrawBox(s, m_size, m_pos, 'D');
+};
+
+void Window::Build(Screen &s, Position pos)
+{
+  Drawable _window;
+
+  auto parent = GetParent();
+
+  int to_bottom = floor_h - m_size.h;
+  Position relative_pos = {parent->m_pos.x, parent->m_pos.y};
+
+  SetPosition(relative_pos + added_position);
+
+  _window.DrawBox(s, m_size, m_pos, 'W');
 };
