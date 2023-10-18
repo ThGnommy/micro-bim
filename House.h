@@ -47,8 +47,6 @@ public:
     m_size = new_size;
   }
 
-  // std::vector<Component *> children;
-
   Position m_pos{0, 0};
   Size m_size{0, 0};
 };
@@ -121,7 +119,7 @@ class Door : public Component
 {
 
 public:
-  Door(Component *parent) : Component(parent)
+  Door(Component *parent, Position _pos) : Component(parent), added_position(_pos)
   {
     SetSize({6, 6});
   }
@@ -134,6 +132,8 @@ public:
 
   int cost{100};
   float delivery_time{1.5f};
+
+  Position added_position{};
 
 private:
   void Add(Component *component) override{};

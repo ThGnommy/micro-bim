@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "screenlib.h"
 #include "House.h"
 
@@ -20,7 +21,7 @@ int main()
   std::cout << "Set the number of floors (1 is by default): ";
   std::cin >> number_of_floor;
 
-  Screen screen(45, 15 * number_of_floor);
+  Screen screen(40, 10 * number_of_floor);
 
   for (int i = 0; i < number_of_floor; ++i)
   {
@@ -40,7 +41,7 @@ int main()
     auto floors = house->GetChildren();
     auto floor = floors[floor_index];
 
-    floor->Add(new Door(floor));
+    floor->Add(new Door(floor, {4, 4}));
 
     for (auto &cose : floor->GetChildren())
     {

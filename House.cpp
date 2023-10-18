@@ -20,9 +20,12 @@ void HouseComposite::BuildComponents(Screen &s)
   for (int i = 0; i < children.size(); ++i)
   {
     Component *house = GetParent();
-    // int new_y = ((children[i]->m_size.h) * i);
-    children[i]->SetSize({m_size.w, 15});
-    children[i]->SetPosition({m_pos.x, (int)((children[i]->m_size.h) / i)});
+
+    children[i]->SetSize({m_size.w, 10});
+
+    int y_pos = (int)((HouseComposite::m_size.h) - (children[i]->m_size.h * (i + 1)));
+
+    children[i]->SetPosition({m_pos.x, y_pos});
 
     children[i]->Build(s);
   }
@@ -51,7 +54,7 @@ void Door::Build(Screen &s, Position pos)
 
   std::cout << relative_pos.x << " : " << relative_pos.y << std::endl;
 
-  SetPosition(relative_pos);
+  SetPosition(relative_pos + added_position);
   SetSize({4, 6});
 
   _door.DrawBox(s, m_size, m_pos, 'D');
