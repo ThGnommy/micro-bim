@@ -16,14 +16,16 @@ int main()
 
   Component *house = new HouseComposite;
 
-  int number_of_floor = 1;
+  int user_nof_selection;
 
   std::cout << "Set the number of floors (1 is by default): ";
-  std::cin >> number_of_floor;
+  std::cin >> user_nof_selection;
 
-  Screen screen(40, 10 * number_of_floor);
+  house->SetNumberOfFloor(user_nof_selection);
 
-  for (int i = 0; i < number_of_floor; ++i)
+  Screen screen(house->floor_w, house->floor_h * house->GetNumberOfFloor());
+
+  for (int i = 0; i < house->GetNumberOfFloor(); ++i)
   {
     house->Add(new FloorComposite(house));
   }
@@ -39,7 +41,7 @@ int main()
   if (house->IsComposite())
   {
     auto floors = house->GetChildren();
-    auto floor = floors[floor_index];
+    auto floor = floors[floor_index - 1];
 
     floor->Add(new Door(floor, {4, 4}));
 

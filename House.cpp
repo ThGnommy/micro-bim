@@ -4,7 +4,10 @@ void HouseComposite::Build(Screen &s, Position pos)
 {
   Drawable _house;
 
-  m_size = {s.m_width, (unsigned int)(children.size() * 10)};
+  // m_size = {s.m_width, (unsigned int)(children.size() * floor_h)};
+
+  SetSize({floor_w, (unsigned int)(GetChildren().size() * floor_h)});
+
   _house.DrawBox(s, m_size, m_pos, 'o');
 }
 
@@ -21,11 +24,14 @@ void HouseComposite::BuildComponents(Screen &s)
   {
     Component *house = GetParent();
 
-    children[i]->SetSize({m_size.w, 10});
+    children[i]->SetSize({m_size.w, floor_h});
 
-    int y_pos = (int)((HouseComposite::m_size.h) - (children[i]->m_size.h * (i + 1)));
+    int pos_y = (int)((HouseComposite::m_size.h) - (children[i]->m_size.h * (i + 1)));
 
-    children[i]->SetPosition({m_pos.x, y_pos});
+    std::cout << "i: " << i << "\t" << pos_y << "\n";
+    std::cout << "House m_size.h: " << HouseComposite::m_size.h << "\n";
+
+    children[i]->SetPosition({m_pos.x, pos_y});
 
     children[i]->Build(s);
   }

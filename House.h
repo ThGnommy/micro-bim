@@ -32,10 +32,6 @@ public:
   virtual void BuildComponents(Screen &s){};
   virtual int GetCost() const = 0;
   virtual std::vector<Component *> GetChildren() const = 0;
-  virtual bool IsComposite() const
-  {
-    return false;
-  }
 
   virtual void SetPosition(Position new_pos)
   {
@@ -47,6 +43,14 @@ public:
     m_size = new_size;
   }
 
+  virtual bool IsComposite() const { return false; }
+  void SetNumberOfFloor(int new_number) { this->number_of_floor = new_number; }
+  int GetNumberOfFloor() const { return this->number_of_floor; }
+
+  unsigned int floor_w{50};
+  unsigned int floor_h{20};
+
+  int number_of_floor{};
   Position m_pos{0, 0};
   Size m_size{0, 0};
 };
@@ -61,20 +65,11 @@ public:
   int GetCost() const override;
 
   void Add(Component *component) override;
-
   void BuildComponents(Screen &s) override;
-
   std::vector<Component *> children;
+  std::vector<Component *> GetChildren() const override { return this->children; }
 
-  std::vector<Component *> GetChildren() const override
-  {
-    return this->children;
-  }
-
-  bool IsComposite() const override
-  {
-    return true;
-  }
+  bool IsComposite() const override { return true; }
 
   int cost{100};
   float delivery_time{1.5f};
@@ -83,9 +78,7 @@ public:
 class FloorComposite : public Component
 {
 public:
-  FloorComposite(Component *parent) : Component(parent)
-  {
-  }
+  FloorComposite(Component *parent) : Component(parent) {}
 
   void Build(Screen &s, Position pos) override;
 
@@ -99,10 +92,7 @@ public:
 
   void BuildComponents(Screen &s) override;
 
-  bool IsComposite() const override
-  {
-    return true;
-  }
+  bool IsComposite() const override { return true; }
 
   std::vector<Component *> GetChildren() const override
   {
