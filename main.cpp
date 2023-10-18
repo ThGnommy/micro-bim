@@ -4,14 +4,6 @@
 #include "House.h"
 #include "HouseBuilder.h"
 
-namespace
-{
-  int StringToInt(std::string str)
-  {
-    return atoi(str.c_str());
-  }
-}
-
 int main()
 {
 

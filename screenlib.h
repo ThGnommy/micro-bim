@@ -46,11 +46,6 @@ public:
   unsigned int m_width = screen_w;
   unsigned int m_height = screen_h;
 
-  void UpdateScreen(unsigned int width, unsigned int height)
-  {
-    screen.resize(m_width, std::vector<char>(m_height));
-  }
-
   void Render() const;
   void WriteOnFile(std::string file_name) const;
 };

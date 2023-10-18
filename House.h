@@ -11,10 +11,10 @@ protected:
 
 public:
   Component(Component *parent = nullptr) : parent_(parent){};
-  Component(Component &other) = delete;                  // copy constructor
-  Component &operator=(Component &other) = delete;       // copy assignment
-  Component(Component &&other) noexcept = delete;        // move constructor
-  Component &operator=(const Component &other) = delete; // copy assignment
+  Component(Component &other) = delete;
+  Component &operator=(Component &other) = delete;
+  Component(Component &&other) noexcept = delete;
+  Component &operator=(const Component &other) = delete;
   virtual ~Component() {}
 
   void SetParent(Component *parent)
@@ -30,27 +30,25 @@ public:
   virtual void Build(Screen &s, Position pos = {0, 0}){};
   virtual void Add(Component *component) {}
   virtual void BuildComponents(Screen &s){};
-  virtual int GetCost() const = 0;
+
   virtual std::vector<Component *> GetChildren() const = 0;
 
-  virtual void SetPosition(Position new_pos)
-  {
-    m_pos = new_pos;
-  }
+  virtual void SetPosition(Position new_pos) { m_pos = new_pos; }
+  virtual void SetSize(Size new_size) { m_size = new_size; }
 
-  virtual void SetSize(Size new_size)
-  {
-    m_size = new_size;
-  }
+  void SetTotalCost(int cost_to_add) { m_total_cost += cost_to_add; }
+  int GetTotalCost() { return m_total_cost; }
+
+  void SetNumberOfFloor(int new_number) { this->m_number_of_floor = new_number; }
+  int GetNumberOfFloor() const { return this->m_number_of_floor; }
 
   virtual bool IsComposite() const { return false; }
-  void SetNumberOfFloor(int new_number) { this->number_of_floor = new_number; }
-  int GetNumberOfFloor() const { return this->number_of_floor; }
 
   unsigned int floor_w{50};
   unsigned int floor_h{20};
 
-  int number_of_floor{};
+  int m_number_of_floor{};
+  int m_total_cost{0};
 
   Position m_pos{0, 0};
   Size m_size{0, 0};
@@ -63,16 +61,13 @@ public:
 
   void Build(Screen &s, Position pos = {0, 0}) override;
 
-  int GetCost() const override;
-
   void Add(Component *component) override;
   void BuildComponents(Screen &s) override;
+  bool IsComposite() const override { return true; }
   std::vector<Component *> children;
   std::vector<Component *> GetChildren() const override { return this->children; }
 
-  bool IsComposite() const override { return true; }
-
-  int cost{100};
+  int m_cost{300000};
   float delivery_time{1.5f};
 };
 
@@ -83,13 +78,7 @@ public:
 
   void Build(Screen &s, Position pos) override;
 
-  int GetCost() const override { return cost; };
-
-  void Add(Component *component) override
-  {
-    this->children.push_back(component);
-    component->SetParent(this);
-  }
+  void Add(Component *component) override;
 
   void BuildComponents(Screen &s) override;
 
@@ -102,7 +91,7 @@ public:
 
   std::vector<Component *> children;
 
-  int cost{1000};
+  int m_cost{6000};
   float delivery_time{10.0f};
 };
 
@@ -111,15 +100,12 @@ class Door : public Component
 public:
   Door(Component *parent, Position _pos) : Component(parent), added_position(_pos)
   {
-    SetSize({4, 6});
+    SetSize({5, 7});
   }
 
   void Build(Screen &s, Position pos) override;
-  int GetCost() const override { return cost; };
 
-  std::vector<Component *> GetChildren() const override{};
-
-  int cost{100};
+  int m_cost{700};
   float delivery_time{1.5f};
 
   Position added_position{};
@@ -127,6 +113,7 @@ public:
 private:
   void BuildComponents(Screen &s) override{};
   void Add(Component *component) override{};
+  std::vector<Component *> GetChildren() const override { return std::vector<Component *>(); }
 };
 
 class Window : public Component
@@ -139,11 +126,7 @@ public:
 
   void Build(Screen &s, Position _pos) override;
 
-  int GetCost() const override { return cost; };
-
-  std::vector<Component *> GetChildren() const override{};
-
-  int cost{60};
+  int m_cost{500};
   float delivery_time{1.5f};
 
   Position added_position{};
@@ -151,4 +134,5 @@ public:
 private:
   void Add(Component *component) override{};
   void BuildComponents(Screen &s) override{};
+  std::vector<Component *> GetChildren() const override { return std::vector<Component *>(); }
 };

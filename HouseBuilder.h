@@ -3,8 +3,8 @@
 #include <cassert>
 #include "House.h"
 
-constexpr char *RED_COLOR = "\033[31m";
-constexpr char *RESET_COLOR = "\033[0m";
+constexpr char const *RED_COLOR = "\033[31m";
+constexpr char const *RESET_COLOR = "\033[0m";
 
 namespace
 {
@@ -22,7 +22,7 @@ namespace
     if (house->IsComposite())
     {
 
-      auto floors = house->GetChildren();
+      const auto &floors = house->GetChildren();
       auto floor = floors[floor_index - 1];
 
       floor->Add(new Door(floor, {x_pos, 0}));
@@ -38,7 +38,7 @@ namespace
   {
     if (house->IsComposite())
     {
-      auto floors = house->GetChildren();
+      const auto &floors = house->GetChildren();
       auto floor = floors[floor_index - 1];
 
       floor->Add(new Window(floor, {x_pos, y_pos}));
@@ -50,17 +50,6 @@ namespace
     }
   }
 }
-
-// set the floor number
-
-// 1 - Modify a Floor
-// 2 - Render on Console
-// 3 - Render on file (optional)
-
-// (in modify floor)
-// 1 - Add a Door (only if it's the first floor)
-// 2 - add a window
-// 3 - Back
 
 // Here I create the house, and add the floor number choosed by the user
 
@@ -87,8 +76,8 @@ void HandleFloor(Component *house, Screen &screen)
       ClearScreen();
 
       std::cout << "You are editing the floor number " << floor_index << "...\n\n";
-      std::cout << "1 - Add a door at " << '\n';
-      std::cout << "2 - Add a window at " << '\n';
+      std::cout << "1 - Add a door\n";
+      std::cout << "2 - Add a window\n";
 
       std::cin >> user_choice;
 
@@ -118,6 +107,7 @@ void HandleFloor(Component *house, Screen &screen)
     else if (user_choice == 2)
     {
       screen.Render();
+      std::cout << house->GetTotalCost() << std::endl;
     }
     else if (user_choice == 3)
     {
@@ -139,7 +129,7 @@ void CreateHouse(Component *house)
 
     std::cout << "Set the number of floors (1 is by default): ";
     std::cin >> number_of_floor_selected;
-    ErrorMessage("\nThe number of floor must be greater then 1!\n\n");
+    // ErrorMessage("\nThe number of floor must be greater then 1!\n\n");
 
     if (number_of_floor_selected < 1)
     {
@@ -159,7 +149,5 @@ void CreateHouse(Component *house)
     house->BuildComponents(screen);
 
     HandleFloor(house, screen);
-
-    screen.Render();
   }
 }
