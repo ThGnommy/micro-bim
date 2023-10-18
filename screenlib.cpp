@@ -1,5 +1,8 @@
 #include <iostream>
+#include <string>
+#include <fstream>
 #include "screenlib.h"
+using std::string;
 
 Position operator+(const Position &lhs, const Position &rhs)
 {
@@ -52,6 +55,30 @@ void Drawable::DrawBox(Screen &s, Size &m_size, Position &m_pos, char vertices_s
       {
         screen = ' ';
       }
+    }
+  }
+}
+
+void Screen::WriteOnFile(string file_name) const
+{
+  std::fstream question_file;
+
+  question_file.open(file_name, std::ios::out);
+
+  string line;
+
+  if (question_file.is_open())
+  {
+
+    question_file << "-- House --\n\n";
+
+    for (int h = 0; h < m_height; h++)
+    {
+      for (int w = 0; w < m_width; w++)
+      {
+        question_file << screen[w][h];
+      }
+      question_file << '\n';
     }
   }
 }

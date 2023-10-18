@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
 constexpr int screen_w = 50;
 constexpr int screen_h = 20;
@@ -51,6 +52,7 @@ public:
   }
 
   void Render() const;
+  void WriteOnFile(std::string file_name) const;
 };
 
 class Drawable

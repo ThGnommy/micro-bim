@@ -83,7 +83,7 @@ public:
 
   void Build(Screen &s, Position pos) override;
 
-  int GetCost() const override{};
+  int GetCost() const override { return cost; };
 
   void Add(Component *component) override
   {
@@ -108,7 +108,6 @@ public:
 
 class Door : public Component
 {
-
 public:
   Door(Component *parent, Position _pos) : Component(parent), added_position(_pos)
   {

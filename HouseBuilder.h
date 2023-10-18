@@ -71,6 +71,7 @@ void HandleFloor(Component *house, Screen &screen)
     int user_choice;
     std::cout << "1 - Modify a floor" << '\n';
     std::cout << "2 - Render\n";
+    std::cout << "3 - Write on txt file\n";
 
     std::cin >> user_choice;
 
@@ -117,6 +118,10 @@ void HandleFloor(Component *house, Screen &screen)
     else if (user_choice == 2)
     {
       screen.Render();
+    }
+    else if (user_choice == 3)
+    {
+      screen.WriteOnFile("house.txt");
     }
     else
     {
