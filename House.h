@@ -39,7 +39,7 @@ public:
   virtual void SetCost(int new_cost) { m_cost = new_cost; }
   virtual int GetCost() const { return m_cost; }
 
-  virtual void SetConstructionTime(float new_construction_time) { m_construction_time = new_construction_time; }
+  virtual void SetConstructionTime(int new_construction_time) { m_construction_time = new_construction_time; }
   virtual float GetConstructionTime() const { return m_construction_time; }
 
   // virtual void UpdateTotalCost() = 0;
@@ -54,7 +54,7 @@ public:
 
   int m_number_of_floor{};
   int m_cost{};
-  float m_construction_time{1000};
+  int m_construction_time{1000};
 
   Position m_pos{0, 0};
   Size m_size{0, 0};
@@ -82,7 +82,7 @@ public:
   FloorComposite(Component *parent) : Component(parent)
   {
     SetCost(15000);
-    SetConstructionTime(110.5f);
+    SetConstructionTime(110);
   }
 
   void Build(Screen &s, Position pos) override;
@@ -112,7 +112,7 @@ public:
   {
     SetSize({5, 7});
     SetCost(450);
-    SetConstructionTime(10.0f);
+    SetConstructionTime(10);
   }
 
   void Build(Screen &s, Position pos) override;
@@ -133,7 +133,7 @@ public:
   {
     SetSize({5, 5});
     SetCost(700);
-    SetConstructionTime(15.5f);
+    SetConstructionTime(15);
   }
 
   void Build(Screen &s, Position _pos) override;
