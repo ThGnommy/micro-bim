@@ -1,52 +1,78 @@
 #include "House.h"
 
-int House::GetCost()
+void HouseComposite::Add(Component *component)
 {
-  for (auto &door : doors)
+  this->children.push_back(component);
+  component->SetParent(this);
+}
+
+void HouseComposite::Build(Screen &s, Position pos)
+{
+  Drawable _house;
+  SetSize({floor_w, (unsigned int)(GetChildren().size() * floor_h)});
+  _house.DrawBox(s, m_size, m_pos, 'o');
+
+  SetCost(150000);
+}
+
+void HouseComposite::BuildComponents(Screen &s)
+{
+  for (int i = 0; i < children.size(); ++i)
   {
-    total_cost += door->GetCost();
-  }
+    children[i]->SetSize({m_size.w, floor_h});
 
-  for (auto &window : windows)
+    int pos_y = (int)((HouseComposite::m_size.h) - (children[i]->m_size.h * (i + 1)));
+
+    children[i]->SetPosition({m_pos.x, pos_y});
+
+    children[i]->Build(s);
+  }
+}
+
+void FloorComposite::Add(Component *component)
+{
+  this->children.push_back(component);
+  component->SetParent(this);
+}
+
+void FloorComposite::Build(Screen &s, Position pos)
+{
+  Drawable _floor;
+
+  _floor.DrawBox(s, m_size, m_pos, 'F');
+}
+
+void FloorComposite::BuildComponents(Screen &s)
+{
+  for (auto &obj : this->GetChildren())
   {
-    total_cost += window->GetCost();
+    obj->Build(s);
   }
-
-  return total_cost;
 }
 
-int House::GetDeliveryTime()
+void Door::Build(Screen &s, Position pos)
 {
+  Drawable _door;
 
-  for (auto &door : doors)
-  {
-    total_delivery_time += door->GetDeliveryTime();
-  }
+  auto parent = GetParent();
 
-  for (auto &window : windows)
-  {
-    total_delivery_time += window->GetDeliveryTime();
-  }
+  int to_bottom = floor_h - m_size.h;
+  Position relative_pos = {parent->m_pos.x, parent->m_pos.y + to_bottom};
 
-  return total_delivery_time;
-}
+  SetPosition(relative_pos + added_position);
 
-int Window::GetCost()
+  _door.DrawBox(s, m_size, m_pos, 'D');
+};
+
+void Window::Build(Screen &s, Position pos)
 {
-  return cost;
-}
+  Drawable _window;
 
-int Window::GetDeliveryTime()
-{
-  return delivery_time;
-}
+  auto const &parent = GetParent();
 
-int Door::GetCost()
-{
-  return cost;
-}
+  Position relative_pos = {parent->m_pos.x, parent->m_pos.y};
 
-int Door::GetDeliveryTime()
-{
-  return delivery_time;
-}
+  SetPosition(relative_pos + added_position);
+
+  _window.DrawBox(s, m_size, m_pos, 'W');
+};

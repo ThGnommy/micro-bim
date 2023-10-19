@@ -4,97 +4,142 @@
 #include <vector>
 #include "screenlib.h"
 
-class House
+class Component
 {
-public:
-  House() = default;
+protected:
+  Component *parent_ = nullptr;
 
-  House(Screen &screen)
+public:
+  Component(Component *parent = nullptr) : parent_(parent){};
+  Component(Component &other) = delete;
+  Component &operator=(Component &other) = delete;
+  Component(Component &&other) noexcept = delete;
+  Component &operator=(const Component &other) = delete;
+  virtual ~Component() {}
+
+  void SetParent(Component *parent)
   {
-    Box _house;
-    _house.Draw(screen, m_size, m_pos);
+    this->parent_ = parent;
   }
 
-  std::vector<House *> doors;
-  std::vector<House *> windows;
+  Component *GetParent() const
+  {
+    return this->parent_;
+  }
+
+  virtual void Build(Screen &s, Position pos = {0, 0}){};
+  virtual void Add(Component *component) {}
+  virtual void BuildComponents(Screen &s) = 0;
+
+  virtual std::vector<Component *> GetChildren() const = 0;
+
+  virtual void SetPosition(Position new_pos) { m_pos = new_pos; }
+  virtual void SetSize(Size new_size) { m_size = new_size; }
+
+  virtual void SetCost(int new_cost) { m_cost = new_cost; }
+  virtual int GetCost() const { return m_cost; }
+
+  virtual void SetConstructionTime(int new_construction_time) { m_construction_time = new_construction_time; }
+  virtual float GetConstructionTime() const { return m_construction_time; }
+
+  // virtual void UpdateTotalCost() = 0;
+
+  void SetNumberOfFloor(int new_number) { this->m_number_of_floor = new_number; }
+  int GetNumberOfFloor() const { return this->m_number_of_floor; }
+
+  virtual bool IsComposite() const { return false; }
+
+  unsigned int floor_w{50};
+  unsigned int floor_h{20};
+
+  int m_number_of_floor{};
+  int m_cost{};
+  int m_construction_time{1000};
 
   Position m_pos{0, 0};
+  Size m_size{0, 0};
+};
 
-  virtual int GetCost();
-  virtual int GetDeliveryTime();
+class HouseComposite : public Component
+{
+public:
+  HouseComposite() = default;
 
-protected:
-  int total_cost = 300'000;
-  int total_delivery_time = 100;
+  void Build(Screen &s, Position pos = {0, 0}) override;
+
+  void Add(Component *component) override;
+  void BuildComponents(Screen &s) override;
+  bool IsComposite() const override { return true; }
+  std::vector<Component *> children;
+  std::vector<Component *> GetChildren() const override { return this->children; }
+
+  // void UpdateTotalCost() override;
+};
+
+class FloorComposite : public Component
+{
+public:
+  FloorComposite(Component *parent) : Component(parent)
+  {
+    SetCost(15000);
+    SetConstructionTime(110);
+  }
+
+  void Build(Screen &s, Position pos) override;
+
+  void Add(Component *component) override;
+
+  bool IsComposite() const override { return true; }
+
+  void BuildComponents(Screen &s) override;
+
+  // void CheckCollision() {};
+
+  std::vector<Component *> GetChildren() const override
+  {
+    return this->children;
+  }
+
+  std::vector<Component *> children;
+};
+
+class Door : public Component
+{
+public:
+  Door(Component *parent, Position _pos) : Component(parent), added_position(_pos)
+  {
+    SetSize({5, 7});
+    SetCost(450);
+    SetConstructionTime(10);
+  }
+
+  void Build(Screen &s, Position pos) override;
+
+  Position added_position{};
 
 private:
-  Size m_size{screen_w, screen_h};
+  void BuildComponents(Screen &s) override{};
+  void Add(Component *component) override{};
+  std::vector<Component *> GetChildren() const override { return std::vector<Component *>(); }
 };
 
-class Floor : public House
-{
-};
-
-class Window : public House
+class Window : public Component
 {
 public:
-  Window(Screen &screen, int h_pos)
+  Window(Component *parent, Position _pos) : Component(parent), added_position(_pos)
   {
-    Box _window;
-    auto width = static_cast<int>(std::floor(screen.width / 2));
-    m_pos = {width, h_pos};
-    _window.Draw(screen, m_size, m_pos, 'W');
-
-    total_cost += cost;
-    total_delivery_time += delivery_time;
+    SetSize({5, 5});
+    SetCost(700);
+    SetConstructionTime(15);
   }
 
-  Window(Screen &screen, Size size, Position m_pos)
-      : m_size(size)
-  {
-    Box _window;
-    _window.Draw(screen, m_size, m_pos, 'W');
-  }
+  void Build(Screen &s, Position _pos) override;
+  // void UpdateTotalCost() override;
 
-  int GetCost() override;
+  Position added_position{};
 
-  int GetDeliveryTime() override;
-
-  int cost = 500;
-  int delivery_time = 10;
-
-  Size m_size{8, 4};
-};
-
-class Door : public House
-{
-public:
-  Door(Screen &screen, int w_pos)
-  {
-    Box _door;
-    auto width = static_cast<int>(std::floor(screen.width / 2));
-    auto height = screen.height - m_size.h;
-
-    m_pos = {w_pos, (int)height};
-    _door.Draw(screen, m_size, m_pos, 'D');
-
-    total_cost += cost;
-    total_delivery_time += delivery_time;
-  }
-
-  Door(Screen &screen, Size size, Position m_pos)
-      : m_size(size)
-  {
-    Box _door;
-    _door.Draw(screen, m_size, m_pos, 'D');
-  }
-
-  int GetCost() override;
-
-  int GetDeliveryTime() override;
-
-  int cost = 500;
-  int delivery_time = 15;
-
-  Size m_size{5, 6};
+private:
+  void Add(Component *component) override{};
+  void BuildComponents(Screen &s) override{};
+  std::vector<Component *> GetChildren() const override { return std::vector<Component *>(); }
 };

@@ -1,11 +1,25 @@
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <cstdarg>
 #include "screenlib.h"
+using std::string;
 
-void Screen::render()
+Position operator+(const Position &lhs, const Position &rhs)
 {
-  for (int h = 0; h < height; h++)
+  return {lhs.x + rhs.x, lhs.y + rhs.y};
+}
+
+Position operator-(const Position &lhs, const Position &rhs)
+{
+  return {lhs.x - rhs.x, lhs.y - rhs.y};
+}
+
+void Screen::Render() const
+{
+  for (int h = 0; h < m_height; h++)
   {
-    for (int w = 0; w < width; w++)
+    for (int w = 0; w < m_width; w++)
     {
       std::cout << screen[w][h];
     }
@@ -13,7 +27,33 @@ void Screen::render()
   }
 }
 
-void Box::Draw(Screen &s, Size &m_size, Position &m_pos, char vertices_symbol)
+void Screen::WriteOnFile(string file_name, std::initializer_list<const std::string> strings) const
+{
+  std::fstream question_file;
+
+  question_file.open(file_name, std::ios::out);
+
+  string line;
+
+  if (question_file.is_open())
+  {
+    for (int h = 0; h < m_height; h++)
+    {
+      for (int w = 0; w < m_width; w++)
+      {
+        question_file << screen[w][h];
+      }
+      question_file << '\n';
+    }
+
+    for (auto str : strings)
+    {
+      question_file << str << '\n';
+    }
+  }
+}
+
+void Drawable::DrawBox(Screen &s, Size &m_size, Position &m_pos, char vertices_symbol)
 {
   for (int h = 0; h < m_size.h; h++)
   {
