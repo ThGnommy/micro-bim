@@ -8,10 +8,10 @@ constexpr char const *RESET_COLOR = "\033[0m";
 
 namespace
 {
-  void ErrorMessage(std::string message)
-  {
-    std::cout << RED_COLOR << message << RESET_COLOR;
-  }
+  // void ErrorMessage(std::string message)
+  // {
+  //   std::cout << RED_COLOR << message << RESET_COLOR;
+  // }
   void ClearScreen()
   {
     printf("\33c\e[3J");
@@ -21,16 +21,12 @@ namespace
   {
     if (house->IsComposite())
     {
-
       const auto &floors = house->GetChildren();
       auto floor = floors[floor_index - 1];
 
       floor->Add(new Door(floor, {x_pos, 0}));
 
-      for (auto &obj : floor->GetChildren())
-      {
-        obj->Build(screen);
-      }
+      floor->BuildComponents(screen);
     }
   }
 
@@ -43,10 +39,12 @@ namespace
 
       floor->Add(new Window(floor, {x_pos, y_pos}));
 
-      for (auto &obj : floor->GetChildren())
-      {
-        obj->Build(screen);
-      }
+      floor->BuildComponents(screen);
+
+      // for (auto &obj : floor->GetChildren())
+      // {
+      //   obj->Build(screen);
+      // }
     }
   }
 }
@@ -107,7 +105,7 @@ void HandleFloor(Component *house, Screen &screen)
     else if (user_choice == 2)
     {
       screen.Render();
-      std::cout << house->GetTotalCost() << std::endl;
+      std::cout << house->m_total_cost << std::endl;
     }
     else if (user_choice == 3)
     {

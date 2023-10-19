@@ -8,7 +8,6 @@ void HouseComposite::Add(Component *component)
 
 void HouseComposite::Build(Screen &s, Position pos)
 {
-  SetTotalCost(m_cost);
   Drawable _house;
   SetSize({floor_w, (unsigned int)(GetChildren().size() * floor_h)});
   _house.DrawBox(s, m_size, m_pos, 'o');
@@ -24,33 +23,28 @@ void HouseComposite::BuildComponents(Screen &s)
 
     children[i]->SetPosition({m_pos.x, pos_y});
 
-    children[i]->SetTotalCost(m_cost);
-
     children[i]->Build(s);
   }
 }
 
-// int HouseComposite::GetCost() const {
-//     // int total_cost;
+void HouseComposite::UpdateTotalCost()
+{
 
-//     // for (const Component *c : children)
-//     // {
-//     //   total_cost += c->GetCost();
-//     // }
+  m_total_cost += GetCost();
 
-//     // return total_cost;
-// };
+  for (const Component *c : children)
+  {
+    m_total_cost += c->GetCost();
+  }
+};
 
-// int FloorComposite::GetCost() const {
-//     // int total_cost;
-
-//     // for (const Component *c : children)
-//     // {
-//     //   total_cost += c->GetCost();
-//     // }
-
-//     // return total_cost;
-// };
+void FloorComposite::UpdateTotalCost()
+{
+  for (const Component *c : children)
+  {
+    m_total_cost += c->GetCost();
+  }
+};
 
 void FloorComposite::Add(Component *component)
 {
@@ -62,18 +56,19 @@ void FloorComposite::Build(Screen &s, Position pos)
 {
   Drawable _floor;
 
-  SetTotalCost(m_cost);
-
   _floor.DrawBox(s, m_size, m_pos, 'F');
 }
 
-void FloorComposite::BuildComponents(Screen &s){};
+void FloorComposite::BuildComponents(Screen &s)
+{
+  for (auto &obj : this->GetChildren())
+  {
+    obj->Build(s);
+  }
+}
 
 void Door::Build(Screen &s, Position pos)
 {
-
-  SetTotalCost(m_cost);
-
   Drawable _door;
 
   auto parent = GetParent();
@@ -86,11 +81,13 @@ void Door::Build(Screen &s, Position pos)
   _door.DrawBox(s, m_size, m_pos, 'D');
 };
 
+void Door::UpdateTotalCost()
+{
+  m_total_cost += this->GetCost();
+}
+
 void Window::Build(Screen &s, Position pos)
 {
-
-  SetTotalCost(m_cost);
-
   Drawable _window;
 
   auto const &parent = GetParent();
@@ -101,3 +98,8 @@ void Window::Build(Screen &s, Position pos)
 
   _window.DrawBox(s, m_size, m_pos, 'W');
 };
+
+void Window::UpdateTotalCost()
+{
+  m_total_cost += this->GetCost();
+}
