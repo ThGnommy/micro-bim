@@ -11,6 +11,8 @@ void HouseComposite::Build(Screen &s, Position pos)
   Drawable _house;
   SetSize({floor_w, (unsigned int)(GetChildren().size() * floor_h)});
   _house.DrawBox(s, m_size, m_pos, 'o');
+
+  SetCost(150000);
 }
 
 void HouseComposite::BuildComponents(Screen &s)
@@ -27,24 +29,24 @@ void HouseComposite::BuildComponents(Screen &s)
   }
 }
 
-void HouseComposite::UpdateTotalCost()
-{
+// void HouseComposite::UpdateTotalCost()
+// {
+//   m_total_cost += GetCost();
 
-  m_total_cost += GetCost();
+//   for (const Component *c : children)
+//   {
+//     m_total_cost += c->GetCost();
+//   }
+// };
 
-  for (const Component *c : children)
-  {
-    m_total_cost += c->GetCost();
-  }
-};
-
-void FloorComposite::UpdateTotalCost()
-{
-  for (const Component *c : children)
-  {
-    m_total_cost += c->GetCost();
-  }
-};
+// void FloorComposite::UpdateTotalCost()
+// {
+//   for (const Component *c : children)
+//   {
+//     m_total_cost += c->GetCost();
+//   }
+//   std::cout << "\t" << m_total_cost << "\n";
+// };
 
 void FloorComposite::Add(Component *component)
 {
@@ -81,10 +83,10 @@ void Door::Build(Screen &s, Position pos)
   _door.DrawBox(s, m_size, m_pos, 'D');
 };
 
-void Door::UpdateTotalCost()
-{
-  m_total_cost += this->GetCost();
-}
+// void Door::UpdateTotalCost()
+// {
+//   m_total_cost += this->GetCost();
+// }
 
 void Window::Build(Screen &s, Position pos)
 {
@@ -99,7 +101,7 @@ void Window::Build(Screen &s, Position pos)
   _window.DrawBox(s, m_size, m_pos, 'W');
 };
 
-void Window::UpdateTotalCost()
-{
-  m_total_cost += this->GetCost();
-}
+// void Window::UpdateTotalCost()
+// {
+//   m_total_cost += this->GetCost();
+// }

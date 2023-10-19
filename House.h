@@ -38,7 +38,11 @@ public:
 
   virtual void SetCost(int new_cost) { m_cost = new_cost; }
   virtual int GetCost() const { return m_cost; }
-  virtual void UpdateTotalCost() = 0;
+
+  virtual void SetConstructionTime(float new_construction_time) { m_construction_time = new_construction_time; }
+  virtual float GetConstructionTime() const { return m_construction_time; }
+
+  // virtual void UpdateTotalCost() = 0;
 
   void SetNumberOfFloor(int new_number) { this->m_number_of_floor = new_number; }
   int GetNumberOfFloor() const { return this->m_number_of_floor; }
@@ -49,8 +53,8 @@ public:
   unsigned int floor_h{20};
 
   int m_number_of_floor{};
-  int m_total_cost{0};
-  int m_cost{0};
+  int m_cost{};
+  float m_construction_time{1000};
 
   Position m_pos{0, 0};
   Size m_size{0, 0};
@@ -59,10 +63,7 @@ public:
 class HouseComposite : public Component
 {
 public:
-  HouseComposite()
-  {
-    SetCost(200000);
-  };
+  HouseComposite() = default;
 
   void Build(Screen &s, Position pos = {0, 0}) override;
 
@@ -72,9 +73,7 @@ public:
   std::vector<Component *> children;
   std::vector<Component *> GetChildren() const override { return this->children; }
 
-  void UpdateTotalCost() override;
-
-  float delivery_time{1.5f};
+  // void UpdateTotalCost() override;
 };
 
 class FloorComposite : public Component
@@ -82,7 +81,8 @@ class FloorComposite : public Component
 public:
   FloorComposite(Component *parent) : Component(parent)
   {
-    SetCost(40000);
+    SetCost(15000);
+    SetConstructionTime(110.5f);
   }
 
   void Build(Screen &s, Position pos) override;
@@ -93,7 +93,9 @@ public:
 
   void BuildComponents(Screen &s) override;
 
-  void UpdateTotalCost() override;
+  // void UpdateTotalCost() override;
+
+  // void CheckCollision() {};
 
   std::vector<Component *> GetChildren() const override
   {
@@ -101,8 +103,6 @@ public:
   }
 
   std::vector<Component *> children;
-
-  float delivery_time{10.0f};
 };
 
 class Door : public Component
@@ -111,13 +111,12 @@ public:
   Door(Component *parent, Position _pos) : Component(parent), added_position(_pos)
   {
     SetSize({5, 7});
-    SetCost(700);
+    SetCost(450);
+    SetConstructionTime(10.0f);
   }
 
   void Build(Screen &s, Position pos) override;
-  void UpdateTotalCost() override;
-
-  float delivery_time{1.5f};
+  // void UpdateTotalCost() override;
 
   Position added_position{};
 
@@ -132,14 +131,13 @@ class Window : public Component
 public:
   Window(Component *parent, Position _pos) : Component(parent), added_position(_pos)
   {
-    SetCost(500);
     SetSize({5, 5});
+    SetCost(700);
+    SetConstructionTime(15.5f);
   }
 
   void Build(Screen &s, Position _pos) override;
-  void UpdateTotalCost() override;
-
-  float delivery_time{1.5f};
+  // void UpdateTotalCost() override;
 
   Position added_position{};
 

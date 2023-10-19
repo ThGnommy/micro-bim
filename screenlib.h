@@ -47,7 +47,7 @@ public:
   unsigned int m_height = screen_h;
 
   void Render() const;
-  void WriteOnFile(std::string file_name) const;
+  void WriteOnFile(std::string file_name, std::initializer_list<const std::string> strings = {}) const;
 };
 
 class Drawable

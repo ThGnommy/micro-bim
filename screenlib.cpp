@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cstdarg>
 #include "screenlib.h"
 using std::string;
 
@@ -26,7 +27,7 @@ void Screen::Render() const
   }
 }
 
-void Screen::WriteOnFile(string file_name) const
+void Screen::WriteOnFile(string file_name, std::initializer_list<const std::string> strings) const
 {
   std::fstream question_file;
 
@@ -36,9 +37,6 @@ void Screen::WriteOnFile(string file_name) const
 
   if (question_file.is_open())
   {
-
-    question_file << "-- House --\n\n";
-
     for (int h = 0; h < m_height; h++)
     {
       for (int w = 0; w < m_width; w++)
@@ -46,6 +44,11 @@ void Screen::WriteOnFile(string file_name) const
         question_file << screen[w][h];
       }
       question_file << '\n';
+    }
+
+    for (auto str : strings)
+    {
+      question_file << str << '\n';
     }
   }
 }
