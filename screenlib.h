@@ -47,6 +47,13 @@ public:
   unsigned int m_height = screen_h;
 
   void Render() const;
+
+  /**
+   * Draw the screen into a new txt file.
+   *
+   * @param file_name Name of the file
+   * @param strings Initializer_list. Example: {"Text 1", "Text 2", ...}
+   */
   void WriteOnFile(std::string file_name, std::initializer_list<const std::string> strings = {}) const;
 };
 
